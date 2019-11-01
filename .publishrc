@@ -1,0 +1,7 @@
+{
+    "validations": {
+        "vulnerableDependencies": false,
+        "gitTag": false,
+        "branch": false
+    }
+}
