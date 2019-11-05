@@ -39,7 +39,7 @@
   },
   "config": {
     "macysCliVersion": "2.34.2"
-  },
+  },  
   "dependencies": {
     "babel-runtime": "^5.3.0",
     "dotenv": "^6.2.0",
