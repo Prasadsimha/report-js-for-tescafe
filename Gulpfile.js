@@ -18,7 +18,8 @@ gulp.task('lint', function () {
         .pipe(eslint({
             'rules': {
                 'indent': 0,
-                'consistent-return': 0
+                'consistent-return': 0,
+                'space-infix-ops': 0
             }
         }))
         .pipe(eslint.format())

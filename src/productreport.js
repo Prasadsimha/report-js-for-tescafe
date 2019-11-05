@@ -16,10 +16,10 @@ export default class ProductReport {
         this.connected = true;
 
         this.rpClient = new RPClient({
-            token : process.env.REPORT_PORTAL_TOKEN,
-            endpoint : baseUrl,
-            launch : this.launchName,
-            project : this.projectName
+            token: process.env.REPORT_PORTAL_TOKEN,
+            endpoint: baseUrl,
+            launch: this.launchName,
+            project: this.projectName
         });
 
         this.rpClient.checkConnect().then((response) => {
@@ -55,7 +55,7 @@ export default class ProductReport {
         return suiteObj.tempId;
     }
 
-	startTestItem(launchId, fixtureId, stepName) {
+    startTestItem(launchId, fixtureId, stepName) {
 
         if (!this.connected) return;
 
@@ -68,30 +68,68 @@ export default class ProductReport {
 
         return stepObj;
     }
-	
-    captureTestItem(stepObj, launchId, fixtureId, stepName, status, testRunInfo, parentSelf) {
+
+    captureTestItem(stepInfo, launchId, fixtureId, stepName, status, testRunInfo, parentSelf) {
         if (!this.connected) return;
 
         var start_time = this.rpClient.helpers.now();
+        var err_time = this.rpClient.helpers.now();
+        if (stepInfo.length > 0) {
+            start_time = stepInfo[0].time;
+            err_time = stepInfo[stepInfo.length - 1].time + 3;
+        }
+        const stepObj = this.rpClient.startTestItem({
+            name: stepName,
+            start_time: start_time,
+            type: 'STEP'
+        }, launchId, fixtureId);
+
+        stepInfo.forEach((step) => {
+
+            if (step.screenshotPath !== '') {
+                const stepContent = fs.readFileSync(step.screenshotPath);
+                this.rpClient.sendLog(stepObj.tempId, {
+                    status: step.status,
+                    message: step.index + step.message,
+                    time: step.time
+                },
+                    {
+                        name: `Screenshot.png`,
+                        type: 'image/png',
+                        content: stepContent
+                    });
+            }
+            else {
+                this.rpClient.sendLog(stepObj.tempId, {
+                    status: step.status,
+                    message: step.index + step.message,
+                    time: step.time
+                });
+            }
+
+        });
 
         if (testRunInfo.screenshots) {
             testRunInfo.screenshots.forEach((screenshot, idx) => {
                 // console.log('screenshotPath -> ', screenshot.screenshotPath);
 
-                const screenshotContent = fs.readFileSync(screenshot.screenshotPath);
+                if (!screenshot.screenshotPath.includes('Page_') && !screenshot.screenshotPath.includes('Control_')) {
 
-                this.rpClient.sendLog(stepObj.tempId, 
-                    {
-                        status: 'error',
-                        message: 'Error Screenshot',
-                        time: start_time
-                    },
-                    {
-                        name: `${stepName}.png`,
-                        type: 'image/png',
-                        content: screenshotContent
-                    }
-                );
+                    const screenshotContent = fs.readFileSync(screenshot.screenshotPath);
+
+                    this.rpClient.sendLog(stepObj.tempId,
+                        {
+                            status: 'error',
+                            message: 'Error Screenshot',
+                            time: err_time
+                        },
+                        {
+                            name: `${stepName}.png`,
+                            type: 'image/png',
+                            content: screenshotContent
+                        }
+                    );
+                }
             });
         }
 
@@ -102,7 +140,7 @@ export default class ProductReport {
                 this.rpClient.sendLog(stepObj.tempId, {
                     status: 'error',
                     message: stripAnsi(err),
-                    time: start_time
+                    time: err_time
                 });
             });
         }
@@ -117,8 +155,9 @@ export default class ProductReport {
         this.rpClient.finishTestItem(stepObj.tempId, testResult);
     }
 
+
     async finishFixture() {
-        if (!this.connected) return;     
+        if (!this.connected) return;
         this.fixtureList.forEach(async (fixtureId, idx) => {
             await this.rpClient.finishTestItem(fixtureId, {
                 end_time: this.rpClient.helpers.now()

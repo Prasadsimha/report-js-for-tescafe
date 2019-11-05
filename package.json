@@ -1,5 +1,5 @@
 {
-  "name": "testcafe-reporter-mtp-reportportal",
+  "name": "@mtp/testcafe-reporter-mtp-reportportal",
   "version": "1.0.0",
   "description": "mtp-reportportal TestCafe reporter plugin.",
   "repository": "https://code.devops.fds.com/mtp-core/testcafe-reporter-mtp-reportportal",
@@ -32,6 +32,13 @@
     "normalize-newline": "^1.0.2",
     "read-file-relative": "^1.2.0",
     "testcafe": "^0.2.0-alpha"
+  },
+  "engines": {
+    "node": "10.x",
+    "npm": "6.x"
+  },
+  "config": {
+    "macysCliVersion": "2.34.2"
   },
   "dependencies": {
     "babel-runtime": "^5.3.0",
