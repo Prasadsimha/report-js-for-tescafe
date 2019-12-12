@@ -86,6 +86,11 @@ export default class ProductReport {
 
         stepInfo.forEach((step) => {
 
+            if(step.status === 'error')
+            {
+                status = 'failed';
+            }
+
             if (step.screenshotPath !== '') {
                 const stepContent = fs.readFileSync(step.screenshotPath);
                 this.rpClient.sendLog(stepObj.tempId, {
