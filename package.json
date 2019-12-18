@@ -2,9 +2,9 @@
   "name": "@mtp/testcafe-reporter-mtp-reportportal",
   "version": "1.0.0",
   "description": "mtp-reportportal TestCafe reporter plugin.",
-  "repository":     {
-        "type": "git",
-        "url": "git@code.devops.fds.com:mtp-core/mtp-js-reportportal.git"
+  "repository": {
+    "type": "git",
+    "url": "git@code.devops.fds.com:mtp-core/mtp-js-reportportal.git"
   },
   "author": {
     "name": "Harish Saidu",
@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "test": "gulp test",
-	"build": "gulp build"
+    "build": "gulp build"
   },
   "keywords": [
     "testcafe",
