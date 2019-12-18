@@ -37,6 +37,9 @@
     "read-file-relative": "^1.2.0",
     "testcafe": "^0.2.0-alpha"
   },
+  "engines": {
+    "node": "10.16.x"
+  },
   "dependencies": {
     "babel-runtime": "^5.3.0",
     "dotenv": "^6.2.0",
