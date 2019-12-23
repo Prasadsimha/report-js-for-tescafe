@@ -31,7 +31,7 @@ export default function () {
         
             const title = `[ ${result === 'passed' ? this.chalk.green.bold('✓') : result === 'skipped' ? this.chalk.blue.bold('-') : this.chalk.red.bold('✖')} ] ${name}`;
 
-            var stepInfo=JSON.parse( meta['stepinfo'] );
+            var stepInfo=meta['stepinfo'];
         
             this.setIndent(2)
                 .write(`${title}`)
