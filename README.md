@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/redfox256/testcafe-reporter-reportportal.svg)](https://travis-ci.org/redfox256/testcafe-reporter-reportportal)
 
+
 This is the **reportportal** reporter plugin for [TestCafe](http://devexpress.github.io/testcafe).
 
 <p align="center">
