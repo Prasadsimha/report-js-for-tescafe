@@ -69,84 +69,95 @@ export default class ProductReport {
         return stepObj;
     }
 
+    normalizeBrowserString(inputString) {
+        var browserString = inputString.replace(/ /g, 'spc');
+        browserString = browserString.replace(/\./g, 'dot');
+        browserString = browserString.replace(/\//g, 'slh');
+        return browserString;
+    }
+
     captureTestItem(stepInfo, launchId, fixtureId, stepName, status, testRunInfo, parentSelf) {
         if (!this.connected) return;
 
+        const hasErr = !!testRunInfo.errs.length;
+
         var start_time = this.rpClient.helpers.now();
-        var err_time = this.rpClient.helpers.now();
-        if (stepInfo.length > 0) {
-            start_time = stepInfo[0].time;
-            err_time = stepInfo[stepInfo.length - 1].time + 3;
+
+        if (Object.keys(stepInfo).length > 0) {
+            var browserArr = Object.keys(stepInfo);
+            start_time = stepInfo[browserArr[0]][0].time;
         }
+
+        if (hasErr) {
+            testRunInfo.errs.forEach(error => {
+                var checkBrowser = this.normalizeBrowserString(error.userAgent);
+                var err_time=stepInfo[checkBrowser][stepInfo[checkBrowser].length-1].time + 1;
+                stepInfo[checkBrowser].push(
+                    {
+                        'browser': error.userAgent,
+                        'index': 'END.',
+                        'time': err_time,
+                        'message': error.errMsg,
+                        'status': 'error',
+                        'screenshotPath': error.screenshotPath,
+                        'duration': 0
+                    }
+                );
+            });
+        }
+
         const stepObj = this.rpClient.startTestItem({
             name: stepName,
             start_time: start_time,
             type: 'STEP'
         }, launchId, fixtureId);
 
-        stepInfo.forEach((step) => {
+        Object.keys(stepInfo).forEach(browserString => {
 
-            if (step.status === 'error')
-                status = 'failed';
+            var stepColl = stepInfo[browserString];
 
-            if (step.screenshotPath !== '') {
-                const stepContent = fs.readFileSync(step.screenshotPath);
-                this.rpClient.sendLog(stepObj.tempId, {
-                    status: step.status,
-                    message: step.index + step.message,
-                    time: step.time
-                },
-                    {
-                        name: `Screenshot.png`,
-                        type: 'image/png',
-                        content: stepContent
-                    });
-            }
-            else {
-                this.rpClient.sendLog(stepObj.tempId, {
-                    status: step.status,
-                    message: step.index + step.message,
-                    time: step.time
-                });
-            }
+            var cleanedString = browserString.replace(/spc/g, ' ');
+            cleanedString = cleanedString.replace(/dot/g, '\.');
+            cleanedString = cleanedString.replace(/slh/g, '\/');
 
-        });
+            this.rpClient.sendLog(stepObj.tempId, {
+                status: 'info',
+                message: 'Starting execution on Browser ' + cleanedString,
+                time: start_time
+            });
 
-        if (testRunInfo.screenshots) {
-            testRunInfo.screenshots.forEach((screenshot, idx) => {
-                // console.log('screenshotPath -> ', screenshot.screenshotPath);
+            stepColl.forEach((step) => {
 
-                if (!screenshot.screenshotPath.includes('Page_') && !screenshot.screenshotPath.includes('Control_')) {
+                if (step.status === 'error')
+                    status = 'failed';
+            
+                var formattedMessage = step.message.replace(/:break:/g, '</br>');
+                formattedMessage = formattedMessage.replace(/:head:/g, '<b><u>');
+                formattedMessage = formattedMessage.replace(/:headend:/g, '</u></b>');
 
-                    const screenshotContent = fs.readFileSync(screenshot.screenshotPath);
-
-                    this.rpClient.sendLog(stepObj.tempId,
+                if (step.screenshotPath !== '') {
+                    const stepContent = fs.readFileSync(step.screenshotPath);
+                    this.rpClient.sendLog(stepObj.tempId, {
+                        status: step.status,
+                        message: step.index + formattedMessage,
+                        time: step.time
+                    },
                         {
-                            status: 'error',
-                            message: 'Error Screenshot',
-                            time: err_time
-                        },
-                        {
-                            name: `${stepName}.png`,
+                            name: `Screenshot.png`,
                             type: 'image/png',
-                            content: screenshotContent
-                        }
-                    );
+                            content: stepContent
+                        });
                 }
-            });
-        }
+                else {
+                    this.rpClient.sendLog(stepObj.tempId, {
+                        status: step.status,
+                        message: step.index + step.message,
+                        time: step.time
+                    });
+                }
 
-        if (testRunInfo.errs) {
-            testRunInfo.errs.forEach((err, idx) => {
-                err = parentSelf.formatError(err);
-
-                this.rpClient.sendLog(stepObj.tempId, {
-                    status: 'error',
-                    message: stripAnsi(err),
-                    time: err_time
-                });
             });
-        }
+        });
 
         var testResult = {
             status: status,
