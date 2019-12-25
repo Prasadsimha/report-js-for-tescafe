@@ -1,6 +1,6 @@
 {
   "name": "@mtp/testcafe-reporter-mtp-reportportal",
-  "version": "1.0.1011",
+  "version": "1.0.1012",
   "description": "mtp-reportportal TestCafe reporter plugin.",
   "repository": {
     "type": "git",
