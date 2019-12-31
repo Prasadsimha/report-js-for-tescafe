@@ -92,10 +92,9 @@ export default class ProductReport {
             testRunInfo.errs.forEach(error => {
                 var checkBrowser = this.normalizeBrowserString(error.userAgent);
                 var err_time=stepInfo[checkBrowser][stepInfo[checkBrowser].length-1].time + 1;
-				if( err_time === '1')
-				{
+				if ( err_time === '1')
 					err_time = this.rpClient.helpers.now();
-				}
+				
                 stepInfo[checkBrowser].push(
                     {
                         'browser': error.userAgent,
