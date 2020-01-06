@@ -91,10 +91,10 @@ export default class ProductReport {
         if (hasErr) {
             testRunInfo.errs.forEach(error => {
                 var checkBrowser = this.normalizeBrowserString(error.userAgent);
-                var err_time=stepInfo[checkBrowser][stepInfo[checkBrowser].length-1].time + 1;
-				if ( err_time === '1')
-					err_time = this.rpClient.helpers.now();
-				
+                var err_time = stepInfo[checkBrowser][stepInfo[checkBrowser].length - 1].time + 1;
+                if (err_time === '1')
+                    err_time = this.rpClient.helpers.now();
+
                 stepInfo[checkBrowser].push(
                     {
                         'browser': error.userAgent,
@@ -133,7 +133,7 @@ export default class ProductReport {
 
                 if (step.status === 'error')
                     status = 'failed';
-            
+
                 var formattedMessage = step.message.replace(/:break:/g, '</br>');
                 formattedMessage = formattedMessage.replace(/:head:/g, '<b><u>');
                 formattedMessage = formattedMessage.replace(/:headend:/g, '</u></b>');
