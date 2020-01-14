@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const stripAnsi = require('strip-ansi');
 const RPClient = require('reportportal-js-client');
+import { isUndefined } from 'util';
 
 const baseUrl = process.env.REPORT_PORTAL_BASE_URL + '/api/v1';
 
@@ -90,11 +91,21 @@ export default class ProductReport {
 
         if (hasErr) {
             testRunInfo.errs.forEach(error => {
-                var checkBrowser = this.normalizeBrowserString(error.userAgent);
+                var checkBrowser='';
+                var browser =error.userAgent;
+          if (browser.includes('(')) {
+            var getBrowser = this.normalizeBrowserString(error.userAgent); 
+            var splitBrowser = getBrowser.split('spc('); 
+             checkBrowser = splitBrowser[0];
+          }
+          else 
+             checkBrowser = this.normalizeBrowserString(error.userAgent);
+          
+
                 var err_time = stepInfo[checkBrowser][stepInfo[checkBrowser].length - 1].time + 1;
                 if (err_time === '1')
                     err_time = this.rpClient.helpers.now();
-
+                if (!isUndefined(error.errMsg)) {
                 stepInfo[checkBrowser].push(
                     {
                         'browser': error.userAgent,
@@ -106,6 +117,20 @@ export default class ProductReport {
                         'duration': 0
                     }
                 );
+            } 
+            else {
+                stepInfo[checkBrowser].push(
+                    {
+                        'browser': error.userAgent,
+                        'index': 'END.',
+                        'time': err_time,
+                        'message':  JSON.stringify(error),
+                        'status': 'error',
+                        'screenshotPath': error.screenshotPath,
+                        'duration': 0
+                    }
+                );
+            }
             });
         }
 
