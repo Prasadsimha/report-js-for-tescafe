@@ -93,6 +93,15 @@ export default class ProductReport {
             testRunInfo.errs.forEach(error => {
                 var checkBrowser='';
                 var browser =error.userAgent;
+                var errMessage='';
+                if (isUndefined(error.errMsg)) {
+                    if (!isUndefined(error.apiFnChain))
+                    errMessage ='[ERROR]: The specified selector does not match any element in the DOM tree.  >> '+ error.apiFnChain[0].toString();
+                    else if (!isUndefined(error.argumentName))
+                    errMessage ='[ERROR]: The ' + error.argumentName.toString() +' argument is expected to be a non-empty string, but it was '+ error.actualValue.toString();
+                    else
+                    errMessage='[ERROR]: '+error.toString();
+                }
           if (browser.includes('(')) {
             var getBrowser = this.normalizeBrowserString(error.userAgent); 
             var splitBrowser = getBrowser.split('spc('); 
@@ -124,7 +133,7 @@ export default class ProductReport {
                         'browser': error.userAgent,
                         'index': 'END.',
                         'time': err_time,
-                        'message':  JSON.stringify(error),
+                        'message':  errMessage,
                         'status': 'error',
                         'screenshotPath': error.screenshotPath,
                         'duration': 0
