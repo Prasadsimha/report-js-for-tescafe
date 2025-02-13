@@ -1,15 +1,15 @@
 {
-  "name": "@mtp/testcafe-reporter-mtp-reportportal",
-  "version": "1.1.4",
-  "description": "mtp-reportportal TestCafe reporter plugin.",
+  "name": "@nott/testcafe-reporter-nott-reportportal",
+  "version": "0.0.1",
+  "description": "nott-reportportal TestCafe reporter plugin.",
   "repository": {
     "type": "git",
-    "url": "git@code.devops.fds.com:mtp-core/mtp-js-reportportal.git"
+    "url": "https://github.com/Prasadsimha"
   },
   "author": {
-    "name": "Harish Saidu",
-    "email": "harish.saidu@macys.com",
-    "url": "https://code.devops.fds.com/mtp-core"
+    "name": "Prasad Banala",
+    "email": "prasadsimha@gmail.com",
+    "url": "https://github.com/Prasadsimha"
   },
   "main": "lib/index",
   "files": [
@@ -24,11 +24,11 @@
     "reporter",
     "plugin"
   ],
-  "license": "Macys",
+  "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "callsite-record": "^3.2.0",
-    "del": "^1.2.0",
+    "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-eslint": "^6.0.0",
@@ -38,13 +38,13 @@
     "testcafe": "^1.13.0"
   },
   "engines": {
-    "node": "10.16.x"
+    "node": ">=10.16.0"
   },
   "dependencies": {
-    "babel-runtime": "^5.3.0",
-    "dotenv": "^6.2.0",
+    "babel-runtime": "^6.26.0",
+    "dotenv": "^8.2.0",
     "envs": "^0.1.6",
-    "reportportal-js-client": "^2.1.1",
-    "strip-ansi": "^5.0.0"
+    "reportportal-js-client": "^5.0.0",
+    "strip-ansi": "^6.0.0"
   }
 }
