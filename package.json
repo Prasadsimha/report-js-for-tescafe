@@ -4,12 +4,12 @@
   "description": "nott-reportportal TestCafe reporter plugin.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Prasadsimha"
+    "url": "https://github.com/Prasadsimha/report-js-for-tescafe.git"
   },
   "author": {
     "name": "Prasad Banala",
     "email": "prasadsimha@gmail.com",
-    "url": "https://github.com/Prasadsimha"
+    "url": "https://github.com/Prasadsimha/report-js-for-tescafe.git"
   },
   "main": "lib/index",
   "files": [

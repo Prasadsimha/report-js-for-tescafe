@@ -32,7 +32,7 @@ npm install
 
 ## Usage
 
-Please refer readme @ git (https://github.com/Prasadsimha)
+Please refer readme @ git (https://github.com/Prasadsimha/report-js-for-tescafe.git)
 
 
 ## Settings needed
